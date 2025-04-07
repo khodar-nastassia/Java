@@ -36,8 +36,4 @@ public class Data {
     public static void addReservation(Reservation res){
         reservations.add(res);
     }
-
-
-
-
     }
