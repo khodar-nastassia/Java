@@ -5,12 +5,14 @@ public class Messages {
         2. User Login
         3. Exit
         Enter choice:""";
+
     String adminMessage = """
         \tWelcome to Admin Area!
         1. Add a new coworking space
         2. Remove a coworking space
         3. View all reservations
         Enter choice:""";
+
     String customerMessage = """
         \tWelcome to Customer Area!
         1. Browse available places
@@ -18,6 +20,7 @@ public class Messages {
         3. View my reservations
         4. Cancel a reservation
         Enter choice:""";
+
     String warningMessage = "Invalid choice!";
 
     public void chooseUser(){System.out.println(userMessage);}
