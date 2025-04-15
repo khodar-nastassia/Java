@@ -1,5 +1,8 @@
 import dto.Reservation;
+import dto.User;
 import dto.Workplace;
+
+import java.util.Map;
 import java.util.Optional;
 import file.ObjectWriter;
 
@@ -11,9 +14,9 @@ public class UserService {
 
     public static void browseAvailablePlaces(){
         System.out.println("\tAvailable Coworking Spaces:");
-        for (Workplace place : Data.getWorkplaces()) {
-            if (place.isAvailable()) {
-                place.showInfo();
+        for (Workplace workplace : Data.getWorkplaces().values()) {
+            if (workplace.isAvailable()) {
+                workplace.showInfo();
             }
         }
     }
@@ -31,12 +34,8 @@ public class UserService {
             String input = scanner.nextLine();
             try{
                 workplaceId = Integer.parseInt(input);
-                int finalWorkplaceId = workplaceId;
-                Optional<Workplace> workplace = Data.getWorkplaces().stream()
-                        .filter(w -> w.getId() == finalWorkplaceId)
-                        .findFirst();
 
-                if (workplace.isPresent()) {
+                if (Data.getWorkplaces().containsKey(workplaceId)) {
                     break;
                 } else {
                     System.out.println("Error: No workplace found with this ID. Try again.");
@@ -60,11 +59,11 @@ public class UserService {
         ObjectWriter.writeObjectToFile(res, "src/file/dataReservation.txt");
         System.out.println("Reservation successful");
         Data.setUnavailablePlace(workplaceId);
-        ObjectWriter.rewriteObjectsFile(Data.getWorkplaces(),"src/file/dataWorkplace.txt");
+        ObjectWriter.writeObjectToFile(Data.getWorkplaces(),"src/file/dataWorkplace.txt");
     }
 
     public static void viewAllWorkplaces(){
-        for (Workplace workplace : Data.getWorkplaces()) {
+        for (Workplace workplace : Data.getWorkplaces().values()) {
             workplace.showInfo();
         }
     }

@@ -11,11 +11,11 @@ public class CustomerService {
         System.out.print("Enter your name: ");
         String name = scanner.nextLine();
         System.out.println("\tYour reservations:");
+
         for (Reservation reservation : Data.getReservations()) {
+            int res = 0;
             if (reservation.getCustomerName().equals(name)) {
                 reservation.showInfo();
-            } else{
-                System.out.println("\tYou don't have any reservations!");
             }
         }
     }
@@ -32,6 +32,7 @@ public class CustomerService {
                 if (removed) {
                     System.out.println("The reservation canceled.");
                     ObjectWriter.rewriteObjectsFile(Data.getReservations(), "src/file/dataReservation.txt");
+
                     break;
                 } else {
                     System.out.println("Error: No reservation found with this ID. Try again.");

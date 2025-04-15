@@ -50,22 +50,16 @@ public class AdminService {
 
     public static void removeWorkplace(){
         while (true){
-            if(Data.getWorkplaces().isEmpty()){
-                System.out.println("No workplaces to remove.");
-                return;
-            }
             System.out.println("Current workplaces:");
-            for (Workplace workplace : Data.getWorkplaces()) {
-                workplace.showInfo();
-            }
+            Data.showWorkplaces();
+
             System.out.print("Enter workplace ID to remove: ");
             String input = scanner.nextLine();
             try{
                 int workplaceId = Integer.parseInt(input);
-                boolean removed = Data.getWorkplaces().removeIf(workplace->workplace.getId()==workplaceId);
-                if (removed) {
+                if (Data.getWorkplaces().remove(workplaceId) != null) {
                     System.out.println("The workplace removed.");
-                    ObjectWriter.rewriteObjectsFile(Data.getWorkplaces(), "src/file/dataWorkplace.txt");
+                    ObjectWriter.writeObjectToFile(Data.getWorkplaces(), "src/file/dataWorkplace.txt");
                     break;
                 } else {
                     System.out.println("Error: No workplace found with this ID. Try again.");
