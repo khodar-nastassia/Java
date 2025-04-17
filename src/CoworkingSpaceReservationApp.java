@@ -12,8 +12,8 @@ public class CoworkingSpaceReservationApp {
         String dataWorkplacePath = "src/file/dataWorkplace.txt";
         String dataReservationPath = "src/file/dataReservation.txt";
 
-        ArrayList<Workplace> loadedWorkplaces = ObjectReader.readObjectsFromFile(dataWorkplacePath, Workplace.class);
-        ArrayList<Reservation> loadedReservations = ObjectReader.readObjectsFromFile(dataReservationPath, Reservation.class);
+        HashMap<Integer, Workplace> loadedWorkplaces = (HashMap<Integer, Workplace>)ObjectReader.readObjectsFromFile(dataWorkplacePath, Workplace.class);
+        ArrayList<Reservation> loadedReservations = (ArrayList<Reservation>)ObjectReader.readObjectsFromFile(dataReservationPath, Reservation.class);
 
         Data.setWorkplaces(loadedWorkplaces);
         Data.setReservations(loadedReservations);
@@ -59,6 +59,3 @@ public class CoworkingSpaceReservationApp {
         }
     }
 }
-
-
-

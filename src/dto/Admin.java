@@ -10,6 +10,4 @@ public class Admin extends User implements Serializable {
         super(name);
         this.password = password;
     }
-
-    public Admin(){};
 }

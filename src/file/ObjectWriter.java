@@ -2,6 +2,7 @@ package file;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Map;
 
 public class ObjectWriter {
 
@@ -35,8 +36,21 @@ public class ObjectWriter {
         }
     }
 
-
-
-
-
+    public static <K,V> void rewriteObjectsFile(Map<K,V> objects, String filePath) {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filePath))) {
+//            for (Map.Entry<K,V> entry : objects.entrySet()) {
+//                oos.writeObject(entry);
+//            }
+            objects.entrySet().stream()
+                    .forEach(entry ->{
+                        try{
+                            oos.writeObject(entry);
+                        } catch (IOException e) {
+                            throw new UncheckedIOException(e);
+                        }
+                    });
+        } catch (IOException e) {
+            System.out.println("Rewrite error: " + e.getMessage());
+        }
+    }
 }
