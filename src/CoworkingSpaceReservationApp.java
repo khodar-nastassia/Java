@@ -12,11 +12,23 @@ public class CoworkingSpaceReservationApp {
         String dataWorkplacePath = "src/file/dataWorkplace.txt";
         String dataReservationPath = "src/file/dataReservation.txt";
 
-        HashMap<Integer, Workplace> loadedWorkplaces = (HashMap<Integer, Workplace>)ObjectReader.readObjectsFromFile(dataWorkplacePath, Workplace.class);
-        ArrayList<Reservation> loadedReservations = (ArrayList<Reservation>)ObjectReader.readObjectsFromFile(dataReservationPath, Reservation.class);
+        Optional<Object> workplaceResult = ObjectReader.readObjectsFromFile(dataWorkplacePath, Workplace.class);
+        Optional<Object> reservationResult = ObjectReader.readObjectsFromFile(dataReservationPath, Reservation.class);
 
-        Data.setWorkplaces(loadedWorkplaces);
-        Data.setReservations(loadedReservations);
+
+        workplaceResult.ifPresent(obj -> {
+            if (obj instanceof HashMap<?, ?> map) {
+                HashMap<Integer, Workplace> loadedWorkplaces = (HashMap<Integer, Workplace>) map;
+                Data.setWorkplaces(loadedWorkplaces);
+            }
+        });
+
+        reservationResult.ifPresent(obj -> {
+            if (obj instanceof List<?> list) {
+                ArrayList<Reservation> loadedReservations = (ArrayList<Reservation>) list;
+                Data.setReservations(loadedReservations);
+            }
+        });
 
         while (true) {
             try {

@@ -8,28 +8,34 @@ import java.util.*;
 
 public class ObjectReader {
 
-    public static Object readObjectsFromFile(String filePath, Class<?> type) {
-
+    public static Optional<Object> readObjectsFromFile(String filePath, Class<?> type) {
 
         File file = new File(filePath);
 
         if (!file.exists()) {
-            return createEmptyCollection(type);
+            return Optional.of(createEmptyCollection(type));
         }
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
             Object obj = ois.readObject();
-            if (type == Reservation.class && obj instanceof List) {
-                return obj;
-            } else if (type == Workplace.class && obj instanceof Map) {
-                return obj;
-            }else {
-                System.out.println("unexpected content in file.");
-
-            }
+            return Optional.ofNullable(obj)
+                    .filter(o -> (type == Reservation.class && o instanceof List)
+                            || (type == Workplace.class && o instanceof Map))
+                    .or(() -> {
+                        System.out.println("Unexpected content in file.");
+                        return Optional.empty();
+                    });
+//            if (type == Reservation.class && obj instanceof List) {
+//                return obj;
+//            } else if (type == Workplace.class && obj instanceof Map) {
+//                return obj;
+//            }else {
+//                System.out.println("unexpected content in file.");
+//
+//            }
         } catch (IOException | ClassNotFoundException e) {
             System.out.println("Read error: " + e.getMessage());
         }
-        return createEmptyCollection(type);
+        return Optional.of(createEmptyCollection(type));
     }
 
     private static Object createEmptyCollection(Class<?> type) {
