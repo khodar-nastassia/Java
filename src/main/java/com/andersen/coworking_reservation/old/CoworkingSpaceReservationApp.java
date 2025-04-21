@@ -7,7 +7,7 @@ public class CoworkingSpaceReservationApp {
 
     private static Scanner scanner = new Scanner(System.in);
 
-    public static void main(String[] args) {
+    public static void mainOLD(String[] args) {
 
         String dataWorkplacePath = "src/file/dataWorkplace.txt";
         String dataReservationPath = "src/file/dataReservation.txt";
