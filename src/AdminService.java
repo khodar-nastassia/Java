@@ -6,16 +6,22 @@ import java.util.Scanner;
 
 public class AdminService {
 
-    private static Scanner scanner = new Scanner(System.in);
+    private final Scanner scanner;
+    private final Data data;
 
-    public static void addWorkplace(){
+    public AdminService(Scanner scanner, Data data) {
+        this.scanner = scanner;
+        this.data = data;
+    }
+
+    public void addWorkplace() {
         String type;
         double price;
 
-        while (true){
+        while (true) {
             System.out.print("Enter a type of workplace: ");
             String inputType = scanner.nextLine();
-            try{
+            try {
                 if (inputType.isEmpty()) {
                     throw new MyException("Error: Type cannot be empty.");
                 } else {
@@ -27,7 +33,7 @@ public class AdminService {
             }
         }
 
-        while (true){
+        while (true) {
             System.out.print("Enter price: ");
             String priceIn = scanner.nextLine();
             try {
@@ -37,27 +43,27 @@ public class AdminService {
                 } else {
                     break;
                 }
-            } catch(NumberFormatException e) {
+            } catch (NumberFormatException e) {
                 System.out.println("Error: Enter a valid number.");
             }
         }
 
         Workplace workplace = new Workplace(type, price);
-        Data.addWorkplace(workplace);
+        data.addWorkplace(workplace);
         ObjectWriter.writeObjectToFile(workplace, "src/file/dataWorkplace.txt");
         System.out.println("The workplace added");
     }
 
-    public static void removeWorkplace(){
-        while (true){
+    public void removeWorkplace() {
+        while (true) {
             System.out.println("Current workplaces:");
-            Data.showWorkplaces();
+            data.showWorkplaces();
 
             System.out.print("Enter workplace ID to remove: ");
             String input = scanner.nextLine();
-            try{
+            try {
                 int workplaceId = Integer.parseInt(input);
-                if (Data.getWorkplaces().remove(workplaceId) != null) {
+                if (data.getWorkplaces().remove(workplaceId) != null) {
                     System.out.println("The workplace removed.");
                     ObjectWriter.writeObjectToFile(Data.getWorkplaces(), "src/file/dataWorkplace.txt");
                     break;
@@ -70,7 +76,7 @@ public class AdminService {
         }
     }
 
-    public static void viewAllReservations(){
+    public static void viewAllReservations() {
         System.out.println("\tAll Reservations:");
         for (Reservation reservation : Data.getReservations()) {
             reservation.showInfo();

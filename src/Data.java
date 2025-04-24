@@ -17,7 +17,7 @@ public class Data {
         workplaces = loadedWorkplaces;
     }
 
-    public static void showWorkplaces() {
+    public void showWorkplaces() {
         if (workplaces.isEmpty()) {
             System.out.println("No workplaces available.");
         } else {
@@ -41,7 +41,7 @@ public class Data {
         }
     }
 
-    public static void addWorkplace(Workplace workplace){
+    public void addWorkplace(Workplace workplace){
 
         workplaces.put(workplace.getId(), workplace);
         //saveWorkplaces();
