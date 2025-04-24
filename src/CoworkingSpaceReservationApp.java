@@ -8,12 +8,13 @@ public class CoworkingSpaceReservationApp {
     private static Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
-
+        Data data = new Data();
         String dataWorkplacePath = "src/file/dataWorkplace.txt";
         String dataReservationPath = "src/file/dataReservation.txt";
 
         Optional<Object> workplaceResult = ObjectReader.readObjectsFromFile(dataWorkplacePath, Workplace.class);
         Optional<Object> reservationResult = ObjectReader.readObjectsFromFile(dataReservationPath, Reservation.class);
+        AdminService adminService = new AdminService(scanner,data);
 
 
         workplaceResult.ifPresent(obj -> {
@@ -25,6 +26,8 @@ public class CoworkingSpaceReservationApp {
 
         reservationResult.ifPresent(obj -> {
             if (obj instanceof List<?> list) {
+
+
                 ArrayList<Reservation> loadedReservations = (ArrayList<Reservation>) list;
                 Data.setReservations(loadedReservations);
             }
@@ -41,8 +44,8 @@ public class CoworkingSpaceReservationApp {
                         message.chooseAdminAct();
                         String adminAct = scanner.nextLine();
                         switch (adminAct) {
-                            case "1" -> AdminService.addWorkplace();
-                            case "2" -> AdminService.removeWorkplace();
+                            case "1" -> adminService.addWorkplace();
+                            case "2" -> adminService.removeWorkplace();
                             case "3" -> AdminService.viewAllReservations();
                             default -> message.warn();
                         }

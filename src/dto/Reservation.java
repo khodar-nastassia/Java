@@ -10,9 +10,17 @@ public class Reservation implements Serializable {
     private String date;
     private String startTime;
     private String endTime;
-    static int reservationCounter = 1;
+    private static int reservationCounter = 1;
 
     public Reservation(String customerName, int workplaceId, String date,String startTime,String endTime){
+        if (customerName == null || customerName.isBlank())
+            throw new IllegalArgumentException("Customer name cannot be null or blank");
+        if (workplaceId <= 0)
+            throw new IllegalArgumentException("Workplace ID must be positive");
+        if (date == null || date.isBlank())
+            throw new IllegalArgumentException("Date cannot be null or blank");
+        if (startTime == null || endTime == null)
+            throw new IllegalArgumentException("Time values cannot be null");
         this.id = reservationCounter++;
         this.customerName =  customerName;
         this.workplaceId = workplaceId;
