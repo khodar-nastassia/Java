@@ -3,7 +3,6 @@ public class Messages {
         \tWelcome to Coworking Space Reservation System!
         1. Admin login
         2. User Login
-        3. Exit
         Enter choice:""";
 
     String adminMessage = """
@@ -11,6 +10,7 @@ public class Messages {
         1. Add a new coworking space
         2. Remove a coworking space
         3. View all reservations
+        4. Exit
         Enter choice:""";
 
     String customerMessage = """
@@ -19,6 +19,7 @@ public class Messages {
         2. Make a reservation
         3. View my reservations
         4. Cancel a reservation
+        5.Exit
         Enter choice:""";
 
     String warningMessage = "Invalid choice!";
