@@ -2,6 +2,7 @@ package com.andersen.coworking_reservation;
 
 import com.andersen.coworking_reservation.dao.*;
 import com.andersen.coworking_reservation.model.*;
+import com.andersen.coworking_reservation.service.Action;
 
 import java.util.List;
 import java.util.Scanner;
@@ -19,94 +20,70 @@ public class CoworkingReservationApplication {
                 Messages message = new Messages();
                 message.chooseAction();
                 String choice = scanner.nextLine();
+                if (choice.equals("1")) {
+                    System.out.print("Username: ");
+                    String username = scanner.nextLine();
+                    System.out.print("Email: ");
+                    String email = scanner.nextLine();
 
-                switch (choice) {
-                    case "1" -> {
-                        System.out.print("Username: ");
-                        String name = scanner.nextLine();
-                        System.out.print("Email: ");
-                        String email = scanner.nextLine();
-                        User user = userDAO.findByUserEmail(name);
-                        if (user == null) {
-                            System.out.println("Login failed.");
-                            return;
-                        }
-                        System.out.println("Welcome, " + user.getName());
+                    User user = userDAO.findByUserEmail(email);
+                    if (user == null) {
+                        System.out.println("User not found. Please register first.");
+                        continue;
+                    }
+                    System.out.println("Welcome, " + user.getName());
+                    if (user.getRole().equals("admin")) {
+                        message.chooseAdminAct();
+                        String adminAct = scanner.nextLine();
+                        Action a = new Action(message, workplaceDAO, scanner, reservationDao);
+                        a.adminAct(adminAct);
+                    } else {
+                        message.chooseCustomerAct();
+                        String customerAct = scanner.nextLine();
+                        Action a = new Action(message, workplaceDAO, scanner, reservationDao);
+                        a.customerAct(customerAct);
+                    }
+                } else if (choice.equals("2")) {
+                    System.out.print("Choose Username: ");
+                    String username = scanner.nextLine();
+                    System.out.print("Choose Email: ");
+                    String email = scanner.nextLine();
+                    if (userDAO.checkEmail(email)) {
+                        System.out.println("An account already exists. Please login.");
+                        continue;
+                    }
+                    System.out.print("Role (admin/customer): ");
+                    String role = scanner.nextLine().toLowerCase();
 
-                        if (user.getRole().equals("admin")) {
-                            message.chooseAdminAct();
-                            String adminAct = scanner.nextLine();
-                            switch (adminAct) {
-                                case "1" -> {
-                                    String type = message.getType();
-                                    Double price = message.getPrice();
-                                    workplaceDAO.add(type, price);
-                                    System.out.println("The workplace added");
-                                }
-                                case "2" -> {
-                                    System.out.println("Current workplaces:");
-                                    for (Workplace workplace : workplaceDAO.getAll()) {
-                                        System.out.println(workplace.getId());
-                                    }
-                                    System.out.print("Choose workplace ID to remove: ");
-                                    int input = scanner.nextInt();
-                                    workplaceDAO.delete(input);
-                                }
-                                case "3" -> {
-                                    for (Reservation r : reservationDao.getAll()) {
-                                        r.toString();
-                                    }
-                                }
-                                default -> message.warn();
-                            }
-                        } else {
-                            message.chooseCustomerAct();
-                            String customerAct = scanner.nextLine();
-                            switch (customerAct) {
-                                case "1" -> {
-                                    for (Workplace wp : workplaceDAO.getAvailableWorkplaces()) {
-                                        System.out.println(wp.getId());
-                                    }
-                                }
-
-                                case "2" -> {
-                                    for (Workplace wp : workplaceDAO.getAvailableWorkplaces()) {
-                                        System.out.println(wp.getId());
-                                    }
-                                    System.out.print("Choose a workplace ID to book: ");
-                                    int input = scanner.nextInt();
-                                    System.out.print("Enter your name: ");
-                                    String customerName = scanner.nextLine();
-                                    System.out.print("Enter date (YYYY-MM-DD): ");
-                                    String date = scanner.nextLine();
-                                    System.out.print("Enter start time (HH:MM): ");
-                                    String startTime = scanner.nextLine();
-                                    System.out.print("Enter end time (HH:MM): ");
-                                    String endTime = scanner.nextLine();
-
-                                    reservationDao.reserve(customerName, input, date, startTime, endTime);
-                                }
-                                case "3" -> {
-                                    System.out.print("Enter your name: ");
-                                    String customerName = scanner.nextLine();
-                                    System.out.println("\tYour reservations:");
-                                    for (Reservation r : reservationDao.getByCustomerName(customerName)) {
-                                        r.toString();
-                                    }
-                                }
-                                case "4" -> {
-                                    System.out.print("Enter your reservation ID: ");
-                                    int input = scanner.nextInt();
-                                    reservationDao.cancel(input);
-                                }
-                                default -> message.warn();
-                            }
-                        }
-
+                    if (!role.equals("admin") && !role.equals("customer")) {
+                        System.out.println("Invalid role. Please enter 'admin' or 'customer'.");
+                        continue;
                     }
 
+                    userDAO.register(username, email, role);
+                    System.out.println("Registered successfully.");
+                    User user = userDAO.findByUserEmail(email);
+                    System.out.println("Welcome, " + user.getName());
+                    if (user.getRole().equals("admin")) {
+                        message.chooseAdminAct();
+                        String adminAct = scanner.nextLine();
+                        Action a = new Action(message, workplaceDAO, scanner, reservationDao);
+                        a.adminAct(adminAct);
+                    } else {
+                        message.chooseCustomerAct();
+                        String customerAct = scanner.nextLine();
+                        Action a = new Action(message, workplaceDAO, scanner, reservationDao);
+                        a.customerAct(customerAct);
+                    }
+
+
+                } else {
+                    return;
                 }
+            } finally {
+
             }
         }
+
     }
 }

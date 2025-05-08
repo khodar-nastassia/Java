@@ -63,7 +63,7 @@ public class WorkplaceDAO {
     }
     public List<Workplace> getAvailableWorkplaces() {
         List<Workplace> availableWorkplaces = new ArrayList<>();
-        String sql = "SELECT * FROM workspaces WHERE is_available = TRUE";
+        String sql = "SELECT * FROM workplaces WHERE is_available = TRUE";
 
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);
