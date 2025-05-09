@@ -1,87 +1,68 @@
 package com.andersen.coworking_reservation.dao;
+import com.andersen.coworking_reservation.db.HibernateUtil;
 import com.andersen.coworking_reservation.model.Workplace;
-import com.andersen.coworking_reservation.db.DBUtil;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.hibernate.query.Query;
 
-import java.sql.*;
-import java.util.ArrayList;
+
 import java.util.List;
 public class WorkplaceDAO {
     public List<Workplace> getAll() {
-        List<Workplace> workplaces = new ArrayList<>();
-        String sql = "SELECT * FROM worksplaces";
-        try (Connection conn = DBUtil.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
-            while (rs.next()) {
-                workplaces.add(new Workplace(
-                        rs.getInt("id"),
-                        rs.getString("type"),
-                        rs.getDouble("price"),
-                        rs.getBoolean("is_available")
-                ));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            return session.createQuery("FROM Workplace", Workplace.class).list();
         }
-        return workplaces;
     }
 
     public void add(String type, Double price) {
-        String sql = "INSERT INTO workplaces (type, price, is_available) VALUES (?, ?, ?)";
-        try (Connection conn = DBUtil.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, type);
-            stmt.setDouble(2, price);
-            stmt.setBoolean(3, true);
-            stmt.executeUpdate();
-        } catch (SQLException e) {
+        Transaction tx = null;
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            tx = session.beginTransaction();
+            Workplace workplace = new Workplace(type, price, true);
+            session.save(workplace);
+            tx.commit();
+        } catch (Exception e) {
+            if (tx != null) tx.rollback();
             e.printStackTrace();
         }
     }
 
     public void delete(int id) {
-        String sql = "DELETE FROM workplaces WHERE id = ?";
-        try (Connection conn = DBUtil.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, id);
-            stmt.executeUpdate();
-        } catch (SQLException e) {
+        Transaction tx = null;
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            tx = session.beginTransaction();
+            Workplace workplace = session.get(Workplace.class, id);
+            if (workplace != null) {
+                session.delete(workplace);
+            }
+            tx.commit();
+        } catch (Exception e) {
+            if (tx != null) tx.rollback();
             e.printStackTrace();
         }
     }
 
     public void updateIsAvailable(int id, boolean isAvailable) {
-        String sql = "UPDATE workplaces SET is_available = ? WHERE id = ?";
-        try (Connection conn = DBUtil.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setBoolean(1, isAvailable);
-            stmt.setInt(2, id);
-            stmt.executeUpdate();
-        } catch (SQLException e) {
+        Transaction tx = null;
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            tx = session.beginTransaction();
+            Workplace workplace = session.get(Workplace.class, id);
+            if (workplace != null) {
+                workplace.setIsAvailable(isAvailable);
+                session.update(workplace);
+            }
+            tx.commit();
+        } catch (Exception e) {
+            if (tx != null) tx.rollback();
             e.printStackTrace();
         }
     }
+
     public List<Workplace> getAvailableWorkplaces() {
-        List<Workplace> availableWorkplaces = new ArrayList<>();
-        String sql = "SELECT * FROM workplaces WHERE is_available = TRUE";
-
-        try (Connection conn = DBUtil.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
-
-            while (rs.next()) {
-                int id = rs.getInt("id");
-                String type = rs.getString("type");
-                double price = rs.getDouble("price");
-                boolean isAvailable = rs.getBoolean("is_available");
-
-                Workplace workplace = new Workplace(id, type, price,isAvailable);
-                availableWorkplaces.add(workplace);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Query<Workplace> query = session.createQuery(
+                    "FROM Workplace WHERE isAvailable = true", Workplace.class);
+            return query.list();
         }
-
-        return availableWorkplaces;
     }
 }

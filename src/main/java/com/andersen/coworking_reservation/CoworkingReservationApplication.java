@@ -4,7 +4,8 @@ import com.andersen.coworking_reservation.dao.*;
 import com.andersen.coworking_reservation.model.*;
 import com.andersen.coworking_reservation.service.Action;
 
-import java.util.List;
+
+
 import java.util.Scanner;
 
 public class CoworkingReservationApplication {
@@ -30,6 +31,8 @@ public class CoworkingReservationApplication {
                     if (user == null) {
                         System.out.println("User not found. Please register first.");
                         continue;
+                    }else {
+                        System.out.println(user.getName());
                     }
                     System.out.println("Welcome, " + user.getName());
                     if (user.getRole().equals("admin")) {
@@ -59,10 +62,11 @@ public class CoworkingReservationApplication {
                         System.out.println("Invalid role. Please enter 'admin' or 'customer'.");
                         continue;
                     }
+                    User user = new User(username, email, role);
 
-                    userDAO.register(username, email, role);
+                    userDAO.register(user);
                     System.out.println("Registered successfully.");
-                    User user = userDAO.findByUserEmail(email);
+//                    User user = userDAO.findByUserEmail(email);
                     System.out.println("Welcome, " + user.getName());
                     if (user.getRole().equals("admin")) {
                         message.chooseAdminAct();
