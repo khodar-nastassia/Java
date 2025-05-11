@@ -1,11 +1,17 @@
 package com.andersen.coworking_reservation;
 
-import com.andersen.coworking_reservation.model.Workplace;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.Scanner;
-
+@Component
 public class Messages {
-    private Scanner scanner = new Scanner(System.in);
+    private Scanner scanner;
+    @Autowired
+    public Messages(Scanner scanner) {
+        this.scanner = scanner;
+    }
+
     String welcomeMessage = """
         \tWelcome to Coworking Space Reservation System!
         1. Login

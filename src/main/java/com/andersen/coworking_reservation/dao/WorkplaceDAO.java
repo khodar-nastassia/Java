@@ -1,68 +1,55 @@
 package com.andersen.coworking_reservation.dao;
-import com.andersen.coworking_reservation.db.HibernateUtil;
+
 import com.andersen.coworking_reservation.model.Workplace;
 import org.hibernate.Session;
-import org.hibernate.Transaction;
-import org.hibernate.query.Query;
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 
 import java.util.List;
+@Repository
+@Transactional
 public class WorkplaceDAO {
+
+    private final SessionFactory sessionFactory;
+
+    @Autowired
+    public WorkplaceDAO(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
     public List<Workplace> getAll() {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            return session.createQuery("FROM Workplace", Workplace.class).list();
-        }
+        return getSession()
+                .createQuery("FROM Workplace", Workplace.class)
+                .getResultList();
     }
 
-    public void add(String type, Double price) {
-        Transaction tx = null;
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            tx = session.beginTransaction();
-            Workplace workplace = new Workplace(type, price, true);
-            session.save(workplace);
-            tx.commit();
-        } catch (Exception e) {
-            if (tx != null) tx.rollback();
-            e.printStackTrace();
-        }
+    public void add(Workplace workplace) {
+        getSession().save(workplace);
     }
 
     public void delete(int id) {
-        Transaction tx = null;
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            tx = session.beginTransaction();
-            Workplace workplace = session.get(Workplace.class, id);
-            if (workplace != null) {
-                session.delete(workplace);
-            }
-            tx.commit();
-        } catch (Exception e) {
-            if (tx != null) tx.rollback();
-            e.printStackTrace();
+        Workplace workplace = getSession().get(Workplace.class, id);
+        if (workplace != null) {
+            getSession().delete(workplace);
         }
     }
 
     public void updateIsAvailable(int id, boolean isAvailable) {
-        Transaction tx = null;
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            tx = session.beginTransaction();
-            Workplace workplace = session.get(Workplace.class, id);
-            if (workplace != null) {
-                workplace.setIsAvailable(isAvailable);
-                session.update(workplace);
-            }
-            tx.commit();
-        } catch (Exception e) {
-            if (tx != null) tx.rollback();
-            e.printStackTrace();
+        Workplace workplace = getSession().get(Workplace.class, id);
+        if (workplace != null) {
+            workplace.setIsAvailable(isAvailable);
+            getSession().update(workplace);
         }
     }
 
     public List<Workplace> getAvailableWorkplaces() {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            Query<Workplace> query = session.createQuery(
-                    "FROM Workplace WHERE isAvailable = true", Workplace.class);
-            return query.list();
-        }
+        return getSession()
+                .createQuery("FROM Workplace WHERE isAvailable = true", Workplace.class)
+                .getResultList();
+    }
+    private Session getSession() {
+        return sessionFactory.getCurrentSession();
     }
 }

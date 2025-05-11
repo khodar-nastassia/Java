@@ -26,11 +26,11 @@ public class Workplace {
     private boolean isAvailable;
     public Workplace(){}
 
-    public Workplace(String type,double price, boolean isAvailable) {
+    public Workplace(String type,double price) {
 
         this.type = type;
         this.price = price;
-        this.isAvailable = isAvailable;
+        this.isAvailable = true;
     }
     public void setIsAvailable(boolean available) {
         this.isAvailable = available;

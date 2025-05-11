@@ -1,26 +1,41 @@
 package com.andersen.coworking_reservation;
 
+import com.andersen.coworking_reservation.config.AppConfig;
 import com.andersen.coworking_reservation.dao.*;
 import com.andersen.coworking_reservation.model.*;
 import com.andersen.coworking_reservation.service.Action;
-
-
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import java.util.Scanner;
+
+
+@EnableTransactionManagement
 
 public class CoworkingReservationApplication {
 
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        UserDAO userDAO = new UserDAO();
-        WorkplaceDAO workplaceDAO = new WorkplaceDAO();
-        ReservationDao reservationDao = new ReservationDao();
+        AnnotationConfigApplicationContext context =
+                new AnnotationConfigApplicationContext(AppConfig.class);
+
+        Scanner scanner = context.getBean(Scanner.class);
+        Messages message = context.getBean(Messages.class);
+
+        UserDAO userDAO = context.getBean(UserDAO.class);
+        WorkplaceDAO workplaceDAO = context.getBean(WorkplaceDAO.class);
+        ReservationDao reservationDao = context.getBean(ReservationDao.class);
+        PlatformTransactionManager txManager = context.getBean(PlatformTransactionManager.class);
+        Action action = context.getBean(Action.class);
 
         while (true) {
+            TransactionStatus tx = txManager.getTransaction(new DefaultTransactionDefinition());
             try {
-                Messages message = new Messages();
                 message.chooseAction();
                 String choice = scanner.nextLine();
+
                 if (choice.equals("1")) {
                     System.out.print("Username: ");
                     String username = scanner.nextLine();
@@ -30,29 +45,31 @@ public class CoworkingReservationApplication {
                     User user = userDAO.findByUserEmail(email);
                     if (user == null) {
                         System.out.println("User not found. Please register first.");
+                        txManager.commit(tx);
                         continue;
-                    }else {
-                        System.out.println(user.getName());
                     }
+
                     System.out.println("Welcome, " + user.getName());
+
+
                     if (user.getRole().equals("admin")) {
                         message.chooseAdminAct();
                         String adminAct = scanner.nextLine();
-                        Action a = new Action(message, workplaceDAO, scanner, reservationDao);
-                        a.adminAct(adminAct);
+                        action.adminAct(adminAct);
                     } else {
                         message.chooseCustomerAct();
                         String customerAct = scanner.nextLine();
-                        Action a = new Action(message, workplaceDAO, scanner, reservationDao);
-                        a.customerAct(customerAct);
+                        action.customerAct(customerAct);
                     }
                 } else if (choice.equals("2")) {
                     System.out.print("Choose Username: ");
                     String username = scanner.nextLine();
                     System.out.print("Choose Email: ");
                     String email = scanner.nextLine();
+
                     if (userDAO.checkEmail(email)) {
                         System.out.println("An account already exists. Please login.");
+                        txManager.commit(tx);
                         continue;
                     }
                     System.out.print("Role (admin/customer): ");
@@ -60,32 +77,36 @@ public class CoworkingReservationApplication {
 
                     if (!role.equals("admin") && !role.equals("customer")) {
                         System.out.println("Invalid role. Please enter 'admin' or 'customer'.");
+                        txManager.commit(tx);
                         continue;
                     }
+
                     User user = new User(username, email, role);
 
                     userDAO.register(user);
                     System.out.println("Registered successfully.");
-//                    User user = userDAO.findByUserEmail(email);
                     System.out.println("Welcome, " + user.getName());
+
                     if (user.getRole().equals("admin")) {
                         message.chooseAdminAct();
                         String adminAct = scanner.nextLine();
-                        Action a = new Action(message, workplaceDAO, scanner, reservationDao);
-                        a.adminAct(adminAct);
+                        action.adminAct(adminAct);
                     } else {
                         message.chooseCustomerAct();
                         String customerAct = scanner.nextLine();
-                        Action a = new Action(message, workplaceDAO, scanner, reservationDao);
-                        a.customerAct(customerAct);
+                        action.customerAct(customerAct);
                     }
 
 
                 } else {
+                    txManager.commit(tx);
+                    context.close();
                     return;
                 }
-            } finally {
-
+                txManager.commit(tx);
+            } catch (Exception e) {
+                txManager.rollback(tx);
+                e.printStackTrace();
             }
         }
 

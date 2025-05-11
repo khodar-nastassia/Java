@@ -1,53 +1,50 @@
 package com.andersen.coworking_reservation.dao;
 
-import com.andersen.coworking_reservation.db.HibernateUtil;
 import com.andersen.coworking_reservation.model.Reservation;
+import org.hibernate.SessionFactory;
 import org.hibernate.Session;
-import org.hibernate.Transaction;
-import org.hibernate.query.Query;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+
+@Repository
+@Transactional
 public class ReservationDao {
-    public void reserve(String customerName, int workplaceId, String date, String startTime, String endTime) {
-        Transaction tx = null;
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            tx = session.beginTransaction();
-            Reservation reservation = new Reservation(customerName, workplaceId, date, startTime, endTime);
-            session.persist(reservation);
-            tx.commit();
-        } catch (Exception e) {
-            if (tx != null) tx.rollback();
-            e.printStackTrace();
-        }
+
+    private final SessionFactory sessionFactory;
+
+    @Autowired
+    public ReservationDao(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
+    public void reserve(Reservation reservation) {
+        getSession().save(reservation);
+
     }
 
     public void cancel(int reservationId) {
-        Transaction tx = null;
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            tx = session.beginTransaction();
-            Reservation reservation = session.get(Reservation.class, reservationId);
-            if (reservation != null) {
-                session.delete(reservation);
-            }
-            tx.commit();
-        } catch (Exception e) {
-            if (tx != null) tx.rollback();
-            e.printStackTrace();
+        Reservation reservation = getSession().get(Reservation.class, reservationId);
+        if (reservation != null) {
+            getSession().delete(reservation);
         }
     }
 
     public List<Reservation> getByCustomerName(String customerName) {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            Query<Reservation> query = session.createQuery(
-                    "FROM Reservation WHERE customerName = :customerName", Reservation.class);
-            query.setParameter("customerName", customerName);
-            return query.getResultList();
-        }
+        return getSession()
+                .createQuery("FROM Reservation WHERE customerName = :name", Reservation.class)
+                .setParameter("name", customerName)
+                .getResultList();
     }
 
     public List<Reservation> getAll() {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            return session.createQuery("FROM Reservation", Reservation.class).list();
-        }
+        return getSession()
+                .createQuery("FROM Reservation", Reservation.class)
+                .getResultList();
+    }
+
+    private Session getSession() {
+        return sessionFactory.getCurrentSession();
     }
 }
