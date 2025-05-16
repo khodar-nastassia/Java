@@ -24,8 +24,8 @@ public class CoworkingReservationApplication {
         Scanner scanner = context.getBean(Scanner.class);
         Messages message = context.getBean(Messages.class);
 
-        UserDAO userDAO = context.getBean(UserDAO.class);
-        WorkplaceDAO workplaceDAO = context.getBean(WorkplaceDAO.class);
+        UserDAOImpl userDAO = context.getBean(UserDAOImpl.class);
+        WorkplaceDAOImpl workplaceDAO = context.getBean(WorkplaceDAOImpl.class);
         ReservationDao reservationDao = context.getBean(ReservationDao.class);
         PlatformTransactionManager txManager = context.getBean(PlatformTransactionManager.class);
         Action action = context.getBean(Action.class);

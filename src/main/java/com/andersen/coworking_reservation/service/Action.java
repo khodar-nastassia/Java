@@ -2,7 +2,7 @@ package com.andersen.coworking_reservation.service;
 
 import com.andersen.coworking_reservation.Messages;
 import com.andersen.coworking_reservation.dao.ReservationDao;
-import com.andersen.coworking_reservation.dao.WorkplaceDAO;
+import com.andersen.coworking_reservation.dao.WorkplaceDAOImpl;
 import com.andersen.coworking_reservation.model.Reservation;
 import com.andersen.coworking_reservation.model.Workplace;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,12 +10,12 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Scanner;
-@Component
+//@Component
 public class Action {
     @Autowired
     private final Messages message;
     @Autowired
-    private final WorkplaceDAO workplaceDAO;
+    private final WorkplaceDAOImpl workplaceDAO;
     @Autowired
     private final Scanner scanner;
     @Autowired
@@ -23,7 +23,7 @@ public class Action {
 
     @Autowired
     public Action(Messages message,
-                  WorkplaceDAO workplaceDAO,
+                  WorkplaceDAOImpl workplaceDAO,
                   Scanner scanner,
                   ReservationDao reservationDao) {
         this.message = message;

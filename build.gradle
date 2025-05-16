@@ -1,6 +1,7 @@
 plugins {
 	id 'java'
-
+	id 'war'
+	id 'org.gretty' version '4.0.3'
 }
 
 group = 'com.andersen'
@@ -27,6 +28,9 @@ dependencies {
 	implementation 'org.springframework:spring-tx:6.2.6'
 	implementation 'org.springframework:spring-orm:6.2.6'
 	implementation 'org.springframework:spring-jdbc'
+	implementation 'org.springframework:spring-webmvc:6.2.6'
+	implementation 'jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:3.0.0'
+	implementation 'org.glassfish.web:jakarta.servlet.jsp.jstl:3.0.1'
 
 	compileOnly 'org.projectlombok:lombok:1.18.32'
 	annotationProcessor 'org.projectlombok:lombok:1.18.32'
@@ -41,12 +45,17 @@ dependencies {
 	annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
 
 	implementation 'com.github.ben-manes.caffeine:caffeine:3.1.8'
+	providedCompile 'jakarta.servlet:jakarta.servlet-api:5.0.0'
 
 
 
 
 
-
+}
+gretty {
+	servletContainer = 'tomcat10' // или 'jetty11'
+	contextPath = '/'
+	httpPort = 8080
 }
 
 tasks.named('test') {
