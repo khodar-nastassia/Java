@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="https://jakarta.ee/xml/ns/jakartaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee
+         https://jakarta.ee/xml/ns/jakartaee/web-app_5_0.xsd"
+         version="5.0">
+<!--<web-app xmlns="http://jakarta.ee/xml/ns/jakartaee"-->
+<!--         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"-->
+<!--         xsi:schemaLocation="http://jakarta.ee/xml/ns/jakartaee-->
+<!--         http://jakarta.ee/xml/ns/jakartaee/web-app_5_0.xsd"-->
+<!--         version="5.0">-->
+
+    <servlet>
+        <servlet-name>dispatcher</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>/WEB-INF/applicationContext.xml</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+
+<!--        <servlet-name>Hello</servlet-name>-->
+<!--        <servlet-class>com.andersen.coworking_reservation.AppServlet</servlet-class>-->
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>dispatcher</servlet-name>
+        <url-pattern>/</url-pattern>
+
+<!--        <servlet-name>Hello</servlet-name>-->
+<!--        <url-pattern>/hello</url-pattern>-->
+    </servlet-mapping>
+
+</web-app>
