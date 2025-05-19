@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Cancel Reservation</title>
+</head>
+<body>
+<h2>Cancel a Reservation</h2>
+
+<form th:action="@{/customer/cancel-reservation}" method="post">
+    <label>Select reservation to cancel:
+        <select name="id">
+            <option th:each="r : ${myReservations}" th:value="${r.id}"
+                    th:text="'#' + ${r.id} + ' - ' + ${r.date} + ', ' + ${r.startTime} + '-' + ${r.endTime}">
+            </option>
+        </select>
+    </label><br/><br/>
+    <button type="submit">Cancel</button>
+</form>
+
+<a th:href="@{/customer}">Back</a>
+</body>
+</html>

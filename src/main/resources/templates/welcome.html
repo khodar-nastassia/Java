@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Welcome</title>
+</head>
+<body>
+<h2>Welcome to Coworking Space Reservation System!</h2>
+<p>Your choice:</p>
+
+<form th:action="@{/login}" method="get" style="display:inline;">
+    <button type="submit">Login</button>
+</form>
+
+<form th:action="@{/register}" method="get" style="display:inline; margin-left: 10px;">
+    <button type="submit">Register</button>
+</form>
+</body>
+</html>

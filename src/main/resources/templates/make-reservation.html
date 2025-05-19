@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Make a Reservation</title>
+</head>
+<body>
+<h2>Make a Reservation</h2>
+
+<form th:action="@{/customer/make-reservation}" th:object="${reservation}" method="post">
+    <label>Workplace:
+        <select th:field="*{workplaceId}">
+            <option th:each="wp : ${availableWorkplaces}" th:value="${wp.id}" th:text="${wp.type + ' ($' + wp.price + ')'}"></option>
+        </select>
+    </label><br/><br/>
+
+    <label>Date: <input type="date" th:field="*{date}" required /></label><br/><br/>
+    <label>Start Time: <input type="time" th:field="*{startTime}" required /></label><br/><br/>
+    <label>End Time: <input type="time" th:field="*{endTime}" required /></label><br/><br/>
+
+    <button type="submit">Reserve</button>
+</form>
+
+<a th:href="@{/customer}">Back</a>
+</body>
+</html

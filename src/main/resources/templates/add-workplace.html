@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Add a new workplace</title>
+</head>
+<body>
+<h2>Enter a workplace details: </h2>
+
+<form th:action="@{/admin/add-workplace}" method="post" th:object="${workplace}" >
+    <label>Type: <input type="text" th:field="*{type}" required /></label><br/>
+    <label>Price: <input type="number" th:field="*{price}" step="0.01" required /></label><br/>
+    <button type="submit">Add</button>
+</form>
+<a th:href="@{/admin}">Back to Admin Menu</a>
+
+</body>
+</html>
