@@ -7,10 +7,12 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Table(name = "workplaces")
+@NoArgsConstructor
 @Setter
 @Getter
 public class Workplace {
@@ -24,7 +26,6 @@ public class Workplace {
 
     @Column(name = "is_available")
     private boolean isAvailable;
-    public Workplace(){}
 
     public Workplace(String type,double price) {
 

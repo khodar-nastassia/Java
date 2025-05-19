@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -27,28 +28,33 @@ public class AdminController {
     public String adminHome(HttpSession session, Model model) {
         User user = (User) session.getAttribute("user");
         if (user == null) {
-            return "redirect:/login-details-view";
+            return "redirect:/login";
         }
         model.addAttribute("user", user);
-        return "admin-action-view";
+        return "admin";
     }
 
     @GetMapping("/add-workplace")
-    public String addWorkplace() {
-        return "admin-add-place-view";
+    public String addWorkplaceForm(Model model) {
+        model.addAttribute("workplace", new Workplace());
+        return "add-workplace";
     }
 
     @PostMapping("/add-workplace")
-    public String addWorkplace(@RequestParam("type") String type,
-                                @RequestParam("price") double price,
-                               HttpSession session) {
-        workplaceService.add(new Workplace(type,price));
+    public String addWorkplace(@ModelAttribute Workplace workplace) {
+        workplace.setIsAvailable(true);
+        workplaceService.addWorkplace(workplace);
         return "redirect:/admin";
+    }
+    @GetMapping("/remove-workplace")
+    public String removeWorkplaceForm(Model model) {
+        model.addAttribute("workplaces", workplaceService.getAllWorkplaces());
+        return "remove-workplace";
     }
 
     @PostMapping("/remove-workplace")
-    public String deleteSpace(@RequestParam int id) {
-        workplaceService.delete(id);
-        return "redirect:/admin/remove-space";
+    public String deleteWorkplace(@RequestParam("id") int id) {
+        workplaceService.deleteWorkplace(id);
+        return "redirect:/admin/remove-workplace";
     }
 }
