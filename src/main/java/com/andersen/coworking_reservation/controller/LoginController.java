@@ -26,16 +26,22 @@ public class LoginController {
         return "login";
     }
     @PostMapping("/login")
-    public String loginForm(@RequestParam("email") String email,
-                        @RequestParam("name") String name,
-                        HttpSession session) {
-        Optional<User> optionalUser = userService.findByEmail(email);
+    public String loginForm(@RequestParam("username") String username,
+                            @RequestParam("password") String password,
+                            HttpSession session) {
+        System.out.println("Trying to find user by name: " + username);
+        Optional<User> optionalUser = userService.findByNameIgnoreCase(username);
+        System.out.println("User found: " + optionalUser.isPresent());
 
         if (optionalUser.isEmpty()) {
             return "redirect:/register";
         }
 
         User user = optionalUser.get();
+        if (!user.getEmail().equalsIgnoreCase(password)) {
+            return "redirect:/login?error";
+        }
+
         session.setAttribute("user", user);
 
         if ("ADMIN".equalsIgnoreCase(user.getRole())) {

@@ -32,7 +32,7 @@ public class RegisterController {
         Optional<User> optionalUser = userService.findByEmail(email);
 
 
-        if (optionalUser != null) {
+        if (optionalUser.isPresent()) {
             model.addAttribute("error", "An account already exists. Please login.");
             return "redirect:/login";
         }
