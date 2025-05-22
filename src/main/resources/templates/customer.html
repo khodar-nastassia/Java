@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Customer Dashboard</title>
+</head>
+<body>
+<h2>Welcome in Customer Area, <span th:text="${user.name}">User</span>!</h2>
+<p>Choose an action:</p>
+
+<form th:action="@{/customer/available-workplaces}" method="get">
+    <button type="submit">1. Browse available-workplaces </button>
+</form>
+
+<form th:action="@{/customer/make-reservation}" method="get">
+    <button type="submit">2. Make a reservation</button>
+</form>
+
+<form th:action="@{/customer/my-reservations}" method="get">
+    <button type="submit">3. View my reservations</button>
+</form>
+
+<form th:action="@{/customer/cancel-reservation}" method="get">
+    <button type="submit">4. Cancel a reservation</button>
+</form>
+
+<form th:action="@{/}" method="get">
+    <button type="submit">5. Exit</button>
+</form>
+</body>
+</html>
