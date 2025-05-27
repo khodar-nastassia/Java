@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Admin Dashboard</title>
+</head>
+<body>
+  <h2>Welcome in Admin Area, <span th:text="${user.name}">User</span>!</h2>
+  <p>Choose an action:</p>
+
+  <form th:action="@{/admin/add-workplace}" method="get">
+    <button type="submit">1. Add a new coworking space</button>
+  </form>
+
+  <form th:action="@{/admin/remove-workplace}" method="get">
+    <button type="submit">2. Remove a coworking space</button>
+  </form>
+
+  <form th:action="@{/admin/reservations}" method="get">
+    <button type="submit">3. View all reservations</button>
+  </form>
+
+  <form th:action="@{/}" method="get">
+    <button type="submit">4. Exit</button>
+  </form>
+</body>
+</html>

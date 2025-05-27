@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Available Workplaces</title>
+</head>
+<body>
+<h2>Available Workplaces</h2>
+
+<table border="1">
+    <tr>
+        <th>ID</th>
+        <th>Type</th>
+        <th>Price</th>
+    </tr>
+    <tr th:each="wp : ${availableWorkplaces}">
+        <td th:text="${wp.id}"></td>
+        <td th:text="${wp.type}"></td>
+        <td th:text="${wp.price}"></td>
+    </tr>
+</table>
+
+<a th:href="@{/customer}">Back</a>
+</body>
+</html>

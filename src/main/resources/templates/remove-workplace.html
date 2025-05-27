@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Remove Workplace</title>
+</head>
+<body>
+<h2>Remove Workplace</h2>
+
+<form th:action="@{/admin/remove-workplace}" method="post">
+  <label>Select Workplace:</label>
+  <select name="id">
+    <option th:each="workplace : ${workplaces}"
+            th:value="${workplace.id}"
+            th:text="${workplace.type + ' - $' + workplace.price}">
+    </option>
+  </select>
+  <button type="submit">Remove</button>
+</form>
+
+<a th:href="@{/admin}">Back to Admin Menu</a>
+</body>
+</html>
